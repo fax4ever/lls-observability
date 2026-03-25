@@ -3,6 +3,11 @@ kind: OpenTelemetryCollector
 metadata:
   name: otel-collector
 spec:
+  env:
+    - name: KUBE_NODE_NAME
+      valueFrom:
+        fieldRef:
+          fieldPath: spec.nodeName
   serviceAccount: otel-collector
   mode: deployment
   upgradeStrategy: automatic
@@ -50,6 +55,7 @@ spec:
     processors:
       k8sattributes:
         filter:
+          namespace:
           node_from_env_var: KUBE_NODE_NAME
       batch:
         send_batch_size: 100
